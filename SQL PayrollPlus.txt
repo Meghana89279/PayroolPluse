@@ -1,0 +1,41 @@
+# Create database
+CREATE DATABASE IF NOT EXISTS payroll_db;
+USE payroll_db;
+
+# EMPLOYEE TABLE
+CREATE TABLE IF NOT EXISTS employees (
+    emp_id INT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    designation VARCHAR(50),
+    base_salary DOUBLE NOT NULL CHECK (base_salary >= 0)
+);
+
+# ATTENDANCE TABLE
+CREATE TABLE IF NOT EXISTS attendance (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    emp_id INT,
+    month INT CHECK (month BETWEEN 1 AND 12),
+    year INT,
+    working_days INT CHECK (working_days BETWEEN 0 AND 31),
+
+    FOREIGN KEY (emp_id) REFERENCES employees(emp_id)
+    ON DELETE CASCADE,
+
+    UNIQUE (emp_id, month, year)
+);
+
+# PAYROLL TABLE
+CREATE TABLE IF NOT EXISTS payroll (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    emp_id INT,
+    month INT,
+    year INT,
+    gross_salary DOUBLE,
+    deductions DOUBLE,
+    net_salary DOUBLE,
+
+    FOREIGN KEY (emp_id) REFERENCES employees(emp_id)
+    ON DELETE CASCADE,
+
+    UNIQUE (emp_id, month, year)
+);
